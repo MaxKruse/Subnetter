@@ -36,7 +36,7 @@ project "Subnetter"
 	includedirs
 	{
 		"%{prj.name}/src/include",
-		"submodules/CommandParser/src/include"
+		"submodules/CommandParser/CP/src/include"
 	}
 
 	defines
