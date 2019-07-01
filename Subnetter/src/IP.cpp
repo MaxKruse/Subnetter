@@ -31,7 +31,11 @@ namespace Subnetter {
 
 	std::string IP::GetGatewayAddressString()
 	{
+<<<<<<< HEAD
 		return GetAddressString(GetNetworkAddress() + 1, m_Mask + 1);
+=======
+		return GetAddressString(GetNetworkAddress() + 1, m_Mask);
+>>>>>>> 00b80100d4083d5c3691e1393f0a0c081714dc8a
 	}
 
 	std::string IP::GetBroadcastAddressString()
@@ -68,7 +72,11 @@ namespace Subnetter {
 
 	std::string IP::GetGatewayAddressString(const unsigned& id)
 	{
+<<<<<<< HEAD
 		return GetAddressString(GetAddress(id) + 1, m_Mask + 1);
+=======
+		return GetAddressString(GetAddress(id) + 1, m_Mask);
+>>>>>>> 00b80100d4083d5c3691e1393f0a0c081714dc8a
 	}
 
 	unsigned int IP::GetNetworkAddress() const
