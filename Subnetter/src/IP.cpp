@@ -26,63 +26,17 @@ namespace Subnetter {
 
 	std::string IP::GetNetworkAddressString()
 	{
-		std::string s;
-		for (auto i = 3; i >= 0; i--)
-		{
-			unsigned int toShift = i * 8;
-			unsigned int shifted = (0xFF << toShift);
-			unsigned int mask = m_Mask & shifted;
-			unsigned int segmentMasked = m_Segments & mask;
-
-			s += std::to_string(segmentMasked >> toShift);
-			if(i != 0)
-			{
-				s += ".";
-			}
-		}
-		return s;
+		return GetAddressString(m_Segments, m_Mask);
 	}
 
 	std::string IP::GetGatewayAddressString()
 	{
-		std::string s;
-		unsigned int tempSegments = (m_Segments & m_Mask) + 1;
-		for (auto i = 3; i >= 0; i--)
-		{
-			unsigned int toShift = i * 8;
-			unsigned int shifted = (0xFF << toShift);
-			unsigned int segmentMasked = tempSegments & shifted;
-
-			s += std::to_string(segmentMasked >> toShift);
-			if (i != 0)
-			{
-				s += ".";
-			}
-		}
-		return s;
+		return GetAddressString(GetNetworkAddress() + 1, m_Mask);
 	}
 
-	std::string IP::GetBroadcastAdressString()
+	std::string IP::GetBroadcastAddressString()
 	{
-		std::string s;
-
-		unsigned int tempSegments = (m_Segments & m_Mask);
-		tempSegments |= ~m_Mask;
-
-		for (auto i = 3; i >= 0; i--)
-		{
-			unsigned int toShift = i * 8;
-			unsigned int shifted = (0xFF << toShift);
-			unsigned int segmentMasked = (tempSegments) & (shifted);
-
-			s += std::to_string(segmentMasked >> toShift);
-			if (i != 0)
-			{
-				s += ".";
-			}
-			
-		}
-		return s;		
+		return GetAddressString(GetBroadcastAddress(), 0xFFFFFFFF);		
 	}
 
 	std::string IP::GetSubnetMaskString()
@@ -104,11 +58,67 @@ namespace Subnetter {
 
 	std::string IP::GetNetworkAddressString(const unsigned& id)
 	{
+		return GetAddressString(GetAddress(id), m_Mask);
+	}
+
+	std::string IP::GetBroadcastAddressString(const unsigned& id)
+	{
+		return GetAddressString(GetAddress(id) | ~m_Mask, m_Mask);
+	}
+
+	std::string IP::GetGatewayAddressString(const unsigned& id)
+	{
+		return GetAddressString(GetAddress(id) + 1, m_Mask);
+	}
+
+	unsigned int IP::GetNetworkAddress() const
+	{
+		return m_Segments;
+	}
+
+	unsigned int IP::GetBroadcastAddress() const
+	{
+		unsigned int tempSegments = (m_Segments & m_Mask);
+		tempSegments |= ~m_Mask;
+		return tempSegments;
+	}
+
+	unsigned int IP::GetSubnetMask() const
+	{
+		return m_Mask;
+	}
+
+	unsigned IP::GetHostsPerNetwork()
+	{
+		return m_NetworkSize - 2;
+	}
+
+	std::string IP::GetAddressString(const unsigned& ip, const unsigned& mask_in)
+	{
+		std::string s;
+		for (auto i = 3; i >= 0; i--)
+		{
+			unsigned int toShift = i * 8;
+			unsigned int shifted = (0xFF << toShift);
+			unsigned int mask = mask_in & shifted;
+			unsigned int segmentMasked = ip & mask;
+
+			s += std::to_string(segmentMasked >> toShift);
+			if (i != 0)
+			{
+				s += ".";
+			}
+		}
+		return s;
+	}
+
+	unsigned int IP::GetAddress(const unsigned& id)
+	{
 		unsigned int addSize = (m_NetworkSize + 1) * id;
 
 		const unsigned int trueMaskAmount = [=]
 		{
-			if(m_MaskRaw >= 24)
+			if (m_MaskRaw >= 24)
 			{
 				return 24;
 			}
@@ -121,7 +131,7 @@ namespace Subnetter {
 			return 8;
 		}();
 
- 		unsigned int tempSegments{0};
+		unsigned int tempSegments{ 0 };
 
 		const auto count = trueMaskAmount / 8;
 
@@ -140,35 +150,6 @@ namespace Subnetter {
 			tempSegments += addSize;
 		}
 
-		std::string s;
-		for (auto i = 3; i >= 0; i--)
-		{
-			unsigned int toShift = i * 8;
-			unsigned int shifted = (0xFF << toShift);
-			unsigned int mask = m_Mask & shifted;
-			unsigned int segmentMasked = tempSegments & mask;
-
-			s += std::to_string(segmentMasked >> toShift);
-			if (i != 0)
-			{
-				s += ".";
-			}
-		}
-		return s;
-	}
-
-	unsigned int IP::GetNetworkAddress() const
-	{
-		return m_Segments;
-	}
-
-	unsigned int IP::GetSubnetMask() const
-	{
-		return m_Mask;
-	}
-
-	unsigned IP::GetHostsPerNetwork()
-	{
-		return m_NetworkSize - 1;
+		return tempSegments;
 	}
 }

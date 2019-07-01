@@ -42,7 +42,7 @@ int main(int argc, char** args)
 	printf("IP: %s\n", ip.c_str());
 	printf("SN Bits: %i\n", mask);
 	printf("NWA: %s\n", myIp.GetNetworkAddressString().c_str());
-	printf("BCA: %s\n", myIp.GetBroadcastAdressString().c_str());
+	printf("BCA: %s\n", myIp.GetBroadcastAddressString().c_str());
 	printf("GATEWAY: %s\n", myIp.GetGatewayAddressString().c_str());
 	printf("SN MASK: %s\n\n", myIp.GetSubnetMaskString().c_str());
 
@@ -53,7 +53,7 @@ int main(int argc, char** args)
 		for (int i = 0; i < 1 << (32 - mask); ++i)
 		{
 			printf("NWA of Network %i: %s\n", i, myIp.GetNetworkAddressString(i).c_str());
-			printf("BCA of Network %i: %s\n", i, myIp.GetBroadcastAdressString().c_str());
+			printf("BCA of Network %i: %s\n", i, myIp.GetBroadcastAddressString().c_str());
 			printf("GATEWAY of Network %i: %s\n", i, myIp.GetGatewayAddressString().c_str());
 			printf("Hosts per Network: %i\n\n", myIp.GetHostsPerNetwork());
 		}
@@ -61,9 +61,9 @@ int main(int argc, char** args)
 	else if(cmdParser.HasCommand("Network"))
 	{
 		auto i = stoi(cmdParser.GetCommandParams("Network")->at(0));
-		printf("NWA of Network %i: %s\n", i, myIp.GetNetworkAddressString().c_str());
-		printf("BCA of Network %i: %s\n", i, myIp.GetBroadcastAdressString().c_str());
-		printf("GATEWAY of Network %i: %s\n", i, myIp.GetGatewayAddressString().c_str());
+		printf("NWA of Network %i: %s\n", i, myIp.GetNetworkAddressString(i).c_str());
+		printf("BCA of Network %i: %s\n", i, myIp.GetBroadcastAddressString(i).c_str());
+		printf("GATEWAY of Network %i: %s\n", i, myIp.GetGatewayAddressString(i).c_str());
 		printf("Hosts per Network: %i\n\n", myIp.GetHostsPerNetwork());
 	}
 	
